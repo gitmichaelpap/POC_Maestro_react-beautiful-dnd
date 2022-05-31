@@ -1,163 +1,90 @@
 import React, { useState } from "react";
 import { Accordion, Card } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Emissora from "./req_hom_14-03-2022_RED.json";
 import "./App.css";
 
-const Programas = [
-  {
-    id: "1",
-    name: "HORA UM",
-    seguimentos: [
-      {
-        id: "11",
-        name: "IP",
-        eventos: [
-          {
-            id: "1091",
-            name: "FADE DE 1 SEGUNDO",
-          },
-        ],
-      },
-      {
-        id: "12",
-        name: "PT1 (HORA UM)",
-        eventos: [
-          {
-            id: "7",
-            name: "MAIS VOCE 14/3 B(H)",
-          },
-          {
-            id: "113",
-            name: "FADE DE 1 SEGUNDO",
-          },
-          {
-            id: "114",
-            name: "TCROSS SUVW TAXA ZERO0105",
-          },
-        ],
-      },
-      {
-        id: "77",
-        name: "PD1 (HORA UM)",
-        eventos: [
-          {
-            id: "21",
-            name: "ENCONTRO 14/3 B(H)",
-          },
-          {
-            id: "25",
-            name: "CARA DA LIMPEZA E",
-          },
-          {
-            id: "27",
-            name: "PROJ AGRO 22 138 AMENDOIM",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "BOM DIA PRAÇA",
-    seguimentos: [
-      {
-        id: "22",
-        name: "IP",
-        eventos: [
-          {
-            id: "23",
-            name: "FADE DE 1 SEGUNDO",
-          },
-        ],
-      },
-      {
-        id: "222",
-        name: "PT1",
-        eventos: [
-          {
-            id: "223",
-            name: "PANTANAL(PAI E FILHO)(DIA)",
-          },
-          {
-            id: "224",
-            name: "GIIN G RURAL FADE 1601 CC",
-          },
-        ],
-      },
-    ],
-  },
-];
+const Programas = JSON.parse(JSON.stringify(Emissora));
 
 export default function App() {
-  const [programas, updateProgramas] = useState(Programas);
+  const [programas, updateProgramas] = useState(Programas.Programas);
 
-  function handleOnDragEndProgramas(result) {
-    if (!result.destination) return;
+  const handleonBeforeCapture = (BeforeCapture) => {
+    console.log("BeforeCapture", BeforeCapture);
+  };
 
-    console.log("OnDragEndProgramas", result);
+  const handleonBeforeDragStart = (BeforeDragStart) => {
+    console.log("BeforeDragStart", BeforeDragStart);
+  };
+
+  const handleonDragStart = (DragStart) => {
+    console.log("DragStart", DragStart);
+  };
+
+  const handleonDragUpdate = (DragUpdate) => {
+    console.log("DragUpdate", DragUpdate);
+  };
+
+  const handleonDragEnd = (DragEnd) => {
+    console.log("DragEnd", DragEnd);
+    if (!DragEnd.destination) return;
 
     const items = Array.from(programas);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const source = DragEnd.source.droppableId.split(".");
+    const destination = DragEnd.destination.droppableId.split(".");
+
+    const [reorderedItem] = items[parseInt(source[0])].Segmentos[
+      parseInt(source[1])
+    ].Eventos.splice(DragEnd.source.index, 1);
+
+    items[parseInt(destination[0])].Segmentos[
+      parseInt(destination[1])
+    ].Eventos.splice(DragEnd.destination.index, 0, reorderedItem);
 
     updateProgramas(items);
-  }
-
-  function handleOnDragEndEventos(result) {
-    if (!result.destination) return;
-
-    console.log("OnDragEndEventos", result);
-
-    const items = Array.from(programas);
-    const source = result.source.droppableId.split(".");
-    const destination = result.destination.droppableId.split(".");
-
-    const [reorderedItem] = items[parseInt(source[1])].seguimentos[
-      parseInt(source[0])
-    ].eventos.splice(result.source.index, 1);
-
-    items[parseInt(destination[1])].seguimentos[
-      parseInt(destination[0])
-    ].eventos.splice(result.destination.index, 0, reorderedItem);
-
-    updateProgramas(items);
-  }
+  };
 
   const accordionEventos = (
     evento,
+    indexEvento,
+    indexSeguimento,
+    indexPrograma,
     innerRef,
     draggableProps,
     dragHandleProps
   ) => {
     return (
       <Card
-        eventkey={evento.id}
+        key={indexEvento}
+        eventkey={indexEvento}
         ref={innerRef}
         {...draggableProps}
         {...dragHandleProps}
       >
-        <Card.Body>{evento.name}</Card.Body>
+        <Card.Body>{evento?.Titulo}</Card.Body>
       </Card>
     );
   };
 
-  const accordionSeguimentos = (seguimento) => {
+  const accordionSeguimentos = (seguimento, indexSeguimento, indexPrograma) => {
     return (
-      <Accordion eventkey={seguimento.id}>
-        <Accordion.Item eventkey={seguimento.id}>
+      <Accordion key={indexSeguimento} eventkey={indexSeguimento}>
+        <Accordion.Item eventkey={indexSeguimento}>
           <Accordion.Header>
-            <strong>{seguimento.name}</strong>
+            <strong>{seguimento?.Apresenta}</strong>
           </Accordion.Header>
           <Accordion.Body>
-            {seguimento?.eventos?.map((evento, indexEvento) => (
+            {seguimento?.Eventos?.map((evento, indexEvento) => (
               <Draggable
-                key={evento.id}
-                draggableId={evento.id}
+                draggableId={`${indexPrograma}.${indexSeguimento}`}
                 index={indexEvento}
               >
                 {(provided) =>
                   accordionEventos(
                     evento,
+                    indexEvento,
+                    indexSeguimento,
+                    indexPrograma,
                     provided.innerRef,
                     provided.draggableProps,
                     provided.dragHandleProps
@@ -171,77 +98,49 @@ export default function App() {
     );
   };
 
-  const accordionProgramas = (
-    programa,
-    indexPrograma,
-    innerRef,
-    draggableProps,
-    dragHandleProps
-  ) => {
+  const accordionProgramas = (programa, indexPrograma) => {
     return (
-      <Accordion eventkey={programa.id} ref={innerRef} {...draggableProps}>
-        <Accordion.Item eventkey={programa.id}>
-          <Card>
-            <Card.Header {...dragHandleProps} />
-            <Accordion.Header>
-              <strong>{programa.name}</strong>
-            </Accordion.Header>
-            <Accordion.Body>
-              <DragDropContext onDragEnd={handleOnDragEndEventos}>
-                {programa?.seguimentos?.map((seguimento, indexSeguimento) => (
-                  <Droppable
-                    key={seguimento.id}
-                    droppableId={`${indexSeguimento}.${indexPrograma}`}
-                    index={indexSeguimento}
-                  >
-                    {(provided) => (
-                      <ul {...provided.droppableProps} ref={provided.innerRef}>
-                        {accordionSeguimentos(seguimento)}
-                        {provided.placeholder}
-                      </ul>
+      <Accordion key={indexPrograma} eventkey={indexPrograma}>
+        <Accordion.Item eventkey={indexPrograma}>
+          <Accordion.Header>
+            <strong>{programa?.Nome}</strong>
+          </Accordion.Header>
+          <Accordion.Body>
+            {programa?.Segmentos?.map((seguimento, indexSeguimento) => (
+              <Droppable droppableId={`${indexPrograma}.${indexSeguimento}`}>
+                {(provided) => (
+                  <ul {...provided.droppableProps} ref={provided.innerRef}>
+                    {accordionSeguimentos(
+                      seguimento,
+                      indexSeguimento,
+                      indexPrograma
                     )}
-                  </Droppable>
-                ))}
-              </DragDropContext>
-            </Accordion.Body>
-          </Card>
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            ))}
+          </Accordion.Body>
         </Accordion.Item>
       </Accordion>
     );
   };
-
-  console.log(`Render Tela`);
 
   return (
     <div className="App">
       <div className="App-header">
         <h1>MAESTRO POC DRAG-DROP</h1>
 
-        <DragDropContext onDragEnd={handleOnDragEndProgramas}>
-          <Droppable droppableId="programas">
-            {(provided) => (
-              <ul {...provided.droppableProps} ref={provided.innerRef}>
-                {programas.map((programa, indexPrograma) => (
-                  <Draggable
-                    key={programa.id}
-                    draggableId={programa.id}
-                    index={indexPrograma}
-                  >
-                    {(provided) =>
-                      accordionProgramas(
-                        programa,
-                        indexPrograma,
-                        provided.innerRef,
-                        provided.draggableProps,
-                        provided.dragHandleProps
-                      )
-                    }
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </ul>
-            )}
-          </Droppable>
+        <DragDropContext
+          onBeforeCapture={handleonBeforeCapture}
+          onBeforeDragStart={handleonBeforeDragStart}
+          onDragStart={handleonDragStart}
+          onDragUpdate={handleonDragUpdate}
+          onDragEnd={handleonDragEnd}
+        >
+          {programas.map((programa, indexPrograma) =>
+            accordionProgramas(programa, indexPrograma)
+          )}
         </DragDropContext>
       </div>
     </div>
