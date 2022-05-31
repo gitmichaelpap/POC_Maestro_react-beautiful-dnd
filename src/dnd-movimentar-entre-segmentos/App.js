@@ -1,95 +1,13 @@
 import React, { useState } from "react";
 import { Accordion, Card } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Emissora from "../req_hom_14-03-2022_RED.json";
 import "./App.css";
 
-const Programas = [
-  {
-    id: "1",
-    name: "HORA UM",
-    seguimentos: [
-      {
-        id: "11",
-        name: "IP",
-        eventos: [
-          {
-            id: "1091",
-            name: "FADE DE 1 SEGUNDO",
-          },
-        ],
-      },
-      {
-        id: "12",
-        name: "PT1 (HORA UM)",
-        eventos: [
-          {
-            id: "7",
-            name: "MAIS VOCE 14/3 B(H)",
-          },
-          {
-            id: "113",
-            name: "FADE DE 1 SEGUNDO",
-          },
-          {
-            id: "114",
-            name: "TCROSS SUVW TAXA ZERO0105",
-          },
-        ],
-      },
-      {
-        id: "77",
-        name: "PD1 (HORA UM)",
-        eventos: [
-          {
-            id: "21",
-            name: "ENCONTRO 14/3 B(H)",
-          },
-          {
-            id: "25",
-            name: "CARA DA LIMPEZA E",
-          },
-          {
-            id: "27",
-            name: "PROJ AGRO 22 138 AMENDOIM",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "BOM DIA PRAÇA",
-    seguimentos: [
-      {
-        id: "22",
-        name: "IP",
-        eventos: [
-          {
-            id: "23",
-            name: "FADE DE 1 SEGUNDO",
-          },
-        ],
-      },
-      {
-        id: "222",
-        name: "PT1",
-        eventos: [
-          {
-            id: "223",
-            name: "PANTANAL(PAI E FILHO)(DIA)",
-          },
-          {
-            id: "224",
-            name: "GIIN G RURAL FADE 1601 CC",
-          },
-        ],
-      },
-    ],
-  },
-];
+const Programas = JSON.parse(JSON.stringify(Emissora));
 
 export default function App() {
-  const [programas, updateProgramas] = useState(Programas);
+  const [programas, updateProgramas] = useState(Programas.Programas);
 
   function handleOnDragEndProgramas(result) {
     if (!result.destination) return;
@@ -112,13 +30,13 @@ export default function App() {
     const source = result.source.droppableId.split(".");
     const destination = result.destination.droppableId.split(".");
 
-    const [reorderedItem] = items[parseInt(source[1])].seguimentos[
-      parseInt(source[0])
-    ].eventos.splice(result.source.index, 1);
+    const [reorderedItem] = items[parseInt(source[0])].Segmentos[
+      parseInt(source[1])
+    ].Eventos.splice(result.source.index, 1);
 
-    items[parseInt(destination[1])].seguimentos[
-      parseInt(destination[0])
-    ].eventos.splice(result.destination.index, 0, reorderedItem);
+    items[parseInt(destination[0])].Segmentos[
+      parseInt(destination[1])
+    ].Eventos.splice(result.destination.index, 0, reorderedItem);
 
     updateProgramas(items);
   }
@@ -131,28 +49,28 @@ export default function App() {
   ) => {
     return (
       <Card
-        eventkey={evento.id}
+        eventkey={evento.NumeroUnico}
         ref={innerRef}
         {...draggableProps}
         {...dragHandleProps}
       >
-        <Card.Body>{evento.name}</Card.Body>
+        <Card.Body>{`${evento.Origem}-${evento.Titulo}`}</Card.Body>
       </Card>
     );
   };
 
-  const accordionSeguimentos = (seguimento) => {
+  const accordionSegmentos = (segmento, indexSegmento) => {
     return (
-      <Accordion eventkey={seguimento.id}>
-        <Accordion.Item eventkey={seguimento.id}>
+      <Accordion eventkey={`${segmento.Numero}-${indexSegmento}`}>
+        <Accordion.Item eventkey={`${segmento.Numero}-${indexSegmento}`}>
           <Accordion.Header>
-            <strong>{seguimento.name}</strong>
+            <strong>{`${segmento.Codigo}-${segmento.Apresenta}`}</strong>
           </Accordion.Header>
           <Accordion.Body>
-            {seguimento?.eventos?.map((evento, indexEvento) => (
+            {segmento?.Eventos?.map((evento, indexEvento) => (
               <Draggable
-                key={evento.id}
-                draggableId={evento.id}
+                key={evento.NumeroUnico}
+                draggableId={`${evento.NumeroUnico}`}
                 index={indexEvento}
               >
                 {(provided) =>
@@ -179,24 +97,24 @@ export default function App() {
     dragHandleProps
   ) => {
     return (
-      <Accordion eventkey={programa.id} ref={innerRef} {...draggableProps}>
-        <Accordion.Item eventkey={programa.id}>
+      <Accordion eventkey={programa.Id} ref={innerRef} {...draggableProps}>
+        <Accordion.Item eventkey={programa.Id}>
           <Card>
             <Card.Header {...dragHandleProps} />
             <Accordion.Header>
-              <strong>{programa.name}</strong>
+              <strong>{programa.Nome}</strong>
             </Accordion.Header>
             <Accordion.Body>
               <DragDropContext onDragEnd={handleOnDragEndEventos}>
-                {programa?.seguimentos?.map((seguimento, indexSeguimento) => (
+                {programa?.Segmentos?.map((segmento, indexSegmento) => (
                   <Droppable
-                    key={seguimento.id}
-                    droppableId={`${indexSeguimento}.${indexPrograma}`}
-                    index={indexSeguimento}
+                    key={`${segmento.Numero}-${indexSegmento}`}
+                    droppableId={`${indexPrograma}.${indexSegmento}`}
+                    index={indexSegmento}
                   >
                     {(provided) => (
                       <ul {...provided.droppableProps} ref={provided.innerRef}>
-                        {accordionSeguimentos(seguimento)}
+                        {accordionSegmentos(segmento, indexSegmento)}
                         {provided.placeholder}
                       </ul>
                     )}
@@ -223,8 +141,8 @@ export default function App() {
               <ul {...provided.droppableProps} ref={provided.innerRef}>
                 {programas.map((programa, indexPrograma) => (
                   <Draggable
-                    key={programa.id}
-                    draggableId={programa.id}
+                    key={`${programa.Id}-${programa.Nome}`}
+                    draggableId={`${programa.Id}`}
                     index={indexPrograma}
                   >
                     {(provided) =>

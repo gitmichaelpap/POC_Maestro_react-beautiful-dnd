@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Accordion, Card } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Emissora from "./req_hom_14-03-2022_RED.json";
+import Emissora from "../req_hom_14-03-2022_RED.json";
 import "./App.css";
 
 const Programas = JSON.parse(JSON.stringify(Emissora));
@@ -47,7 +47,7 @@ export default function App() {
   const accordionEventos = (
     evento,
     indexEvento,
-    indexSeguimento,
+    indexsegmento,
     indexPrograma,
     innerRef,
     draggableProps,
@@ -66,24 +66,24 @@ export default function App() {
     );
   };
 
-  const accordionSeguimentos = (seguimento, indexSeguimento, indexPrograma) => {
+  const accordionsegmentos = (segmento, indexsegmento, indexPrograma) => {
     return (
-      <Accordion key={indexSeguimento} eventkey={indexSeguimento}>
-        <Accordion.Item eventkey={indexSeguimento}>
+      <Accordion key={indexsegmento} eventkey={indexsegmento}>
+        <Accordion.Item eventkey={indexsegmento}>
           <Accordion.Header>
-            <strong>{seguimento?.Apresenta}</strong>
+            <strong>{segmento?.Apresenta}</strong>
           </Accordion.Header>
           <Accordion.Body>
-            {seguimento?.Eventos?.map((evento, indexEvento) => (
+            {segmento?.Eventos?.map((evento, indexEvento) => (
               <Draggable
-                draggableId={`${indexPrograma}.${indexSeguimento}`}
+                draggableId={`${indexPrograma}.${indexsegmento}`}
                 index={indexEvento}
               >
                 {(provided) =>
                   accordionEventos(
                     evento,
                     indexEvento,
-                    indexSeguimento,
+                    indexsegmento,
                     indexPrograma,
                     provided.innerRef,
                     provided.draggableProps,
@@ -106,15 +106,11 @@ export default function App() {
             <strong>{programa?.Nome}</strong>
           </Accordion.Header>
           <Accordion.Body>
-            {programa?.Segmentos?.map((seguimento, indexSeguimento) => (
-              <Droppable droppableId={`${indexPrograma}.${indexSeguimento}`}>
+            {programa?.Segmentos?.map((segmento, indexsegmento) => (
+              <Droppable droppableId={`${indexPrograma}.${indexsegmento}`}>
                 {(provided) => (
                   <ul {...provided.droppableProps} ref={provided.innerRef}>
-                    {accordionSeguimentos(
-                      seguimento,
-                      indexSeguimento,
-                      indexPrograma
-                    )}
+                    {accordionsegmentos(segmento, indexsegmento, indexPrograma)}
                     {provided.placeholder}
                   </ul>
                 )}
