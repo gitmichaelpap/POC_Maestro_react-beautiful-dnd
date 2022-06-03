@@ -1,7 +1,7 @@
 import React from "react";
-import ProgramaList from "./ProgramaList";
+import { ProgramaList } from "./Model";
 import "./App.css";
-import DndContext from "./DndContext";
+import { DndContext } from "./Components/Dnd";
 
 export default function App() {
   return (
@@ -13,8 +13,8 @@ export default function App() {
             programas.map((x, indexPrograma) =>
               ProgramaList({
                 ...x,
-                indexPrograma,
                 context,
+                indexPrograma,
               })
             )
           }

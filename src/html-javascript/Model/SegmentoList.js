@@ -1,8 +1,8 @@
 import React from "react";
 import { Accordion } from "react-bootstrap";
-import EventoList from "./EventoList";
+import { EventoList } from "./index";
 
-export default function SegmentosList(props) {
+export function SegmentoList(props) {
   const { Codigo, Apresenta, Eventos, indexPrograma, indexSegmento, context } =
     props;
 

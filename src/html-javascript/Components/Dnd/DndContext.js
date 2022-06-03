@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Emissora from "../req_hom_14-03-2022_RED.json";
-import { selectDrag, getMovement } from "./Logic";
+import Emissora from "../../../req_hom_14-03-2022_RED.json";
+import { selectDrag, getMovement } from "../../Service/Logic";
 
 const Programas = JSON.parse(JSON.stringify(Emissora));
 
-export default function DndContext({ props, children }) {
+export function DndContext({ props, children }) {
   const [programas, setProgramas] = useState(Programas.Programas);
   const [selectedList, setSelectedList] = useState([]);
 

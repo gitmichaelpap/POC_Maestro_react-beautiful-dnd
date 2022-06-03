@@ -8,7 +8,7 @@ const wasToggleInSelectionGroupKeyUsed = (event) => {
   return isUsingWindows ? event.ctrlKey : event.metaKey;
 };
 
-export default function EventoList(props) {
+export function EventoList(props) {
   const {
     NumeroUnico,
     Titulo,

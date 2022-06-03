@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import Emissora from "../../req_hom_14-03-2022_RED.json";
+import Emissora from "../../../req_hom_14-03-2022_RED.json";
 import {
   // multiSelect,
   mutliDragAwareReorder,
@@ -26,7 +26,6 @@ export function DndContext({ props, children }) {
   const onDragEnd = (result) => {
     console.log("onDragEnd", result);
 
-    // nothing to do
     if (!result?.destination?.droppableId || result.reason === "CANCEL") {
       setDraggingEventoPath(null);
       return;
@@ -87,16 +86,17 @@ export function DndContext({ props, children }) {
 
   // const unselectAll = (key) => setState({ [key]: [] });
 
+  const context = {
+    draggingEventoPath,
+    selectedList,
+    toggleSelection,
+    toggleSelectionInGroup,
+    multiSelectTo,
+  };
+
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-      {children({
-        programas,
-        draggingEventoPath,
-        selectedList,
-        toggleSelection: toggleSelection,
-        toggleSelectionInGroup: toggleSelectionInGroup,
-        multiSelectTo: multiSelectTo,
-      })}
+      {children(programas, context)}
     </DragDropContext>
   );
 }

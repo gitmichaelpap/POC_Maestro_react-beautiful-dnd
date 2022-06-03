@@ -1,8 +1,8 @@
 import React from "react";
 import { Accordion } from "react-bootstrap";
-import SegmentosList from "./SegmentoList";
+import { SegmentoList } from "./index";
 
-export default function ProgramaList(props) {
+export function ProgramaList(props) {
   const { Id, Nome, Segmentos, indexPrograma, context } = props;
 
   return (
@@ -17,7 +17,7 @@ export default function ProgramaList(props) {
 
         <Accordion.Body>
           {Segmentos?.map((x, indexSegmento) =>
-            SegmentosList({ ...x, indexPrograma, indexSegmento, context })
+            SegmentoList({ ...x, indexPrograma, indexSegmento, context })
           )}
         </Accordion.Body>
       </Accordion.Item>
