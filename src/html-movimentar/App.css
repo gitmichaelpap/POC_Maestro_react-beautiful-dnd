@@ -1,28 +1,36 @@
-.example-parent {
-  border: 2px solid #DFA612;
-  color: black;
+.App {
   display: flex;
-  font-family: sans-serif;
-  font-weight: bold;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
 }
 
-.example-origin {
-  flex-basis: 100%;
-  flex-grow: 1;
-  padding: 10px;
+.App-header {
+  width: 80rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
-.example-draggable {
-  background-color: #4AAE9B;
-  font-weight: normal;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  padding: 10px;
+.isSelected {
+  background-color: rgb(255, 255, 153, 0.9);
 }
 
-.example-dropzone {
-  background-color: #6DB65B;
-  flex-basis: 100%;
-  flex-grow: 1;
-  padding: 10px;
+.Droppable {
+  background-color: rgba(238, 234, 234, 0.9);
+}
+
+.Droppable.over {
+  background-color: rgba(183, 240, 183, 0.9);
+}
+
+.Draggable {
+  background-color: rgba(214, 206, 206, 0.9);
+}
+
+.Draggable.over {
+  background-color: rgba(158, 157, 157, 0.5);
 }

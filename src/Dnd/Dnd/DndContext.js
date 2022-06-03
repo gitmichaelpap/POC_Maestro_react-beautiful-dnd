@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import Emissora from "../req_hom_14-03-2022_RED.json";
-import { multiSelect, mutliDragAwareReorder } from "./utils";
+import Emissora from "../../req_hom_14-03-2022_RED.json";
+import {
+  // multiSelect,
+  mutliDragAwareReorder,
+} from "./index";
 
 const Programas = JSON.parse(JSON.stringify(Emissora));
 
-export default function DndContext({ props, children }) {
+export function DndContext({ props, children }) {
   const [programas, setProgramas] = useState(Programas.Programas);
   const [selectedList, setSelectedList] = useState([]);
   const [draggingEventoPath, setDraggingEventoPath] = useState(false);
@@ -13,8 +16,7 @@ export default function DndContext({ props, children }) {
   const onDragStart = (start) => {
     const path = start.draggableId;
 
-    const selectedListClone = [...selectedList];
-    const selected = selectedListClone.includes(path);
+    const selected = selectedList.includes(path);
 
     if (!selected) setSelectedList([path]);
 
@@ -42,8 +44,7 @@ export default function DndContext({ props, children }) {
   };
 
   const toggleSelection = (path) => {
-    const selectedListClone = [...selectedList];
-    const wasSelected = selectedListClone.includes(path);
+    const wasSelected = selectedList.includes(path);
 
     const newItemIds = (() => {
       // O Evento não foi selecionado anteriormente, agora será o único Evento selecionado
@@ -51,7 +52,7 @@ export default function DndContext({ props, children }) {
         return [path];
       }
       // O Evento fazia parte de um grupo selecionado, agora se tornará o único Evento selecionado
-      if (selectedListClone.length > 1) {
+      if (selectedList.length > 1) {
         return [path];
       }
       // Evento foi selecionado anteriormente, mas não em um grupo, agora vamos limpar a seleção
@@ -61,30 +62,27 @@ export default function DndContext({ props, children }) {
   };
 
   const toggleSelectionInGroup = (path) => {
-    const selectedListClone = [...selectedList];
-    const index = selectedListClone.indexOf(path);
+    const index = selectedList.indexOf(path);
 
     // se não selecionado - adicionar os eventos selecionados
     if (index === -1) {
-      setSelectedList([...selectedListClone, path]);
+      setSelectedList([...selectedList, path]);
       return;
     }
     // foi selecionado anteriormente e agora precisa ser removido do grupo
-    selectedListClone.splice(index, 1);
-    setSelectedList(selectedListClone);
+    selectedList.splice(index, 1);
+    setSelectedList(selectedList);
   };
 
   // Este comportamento corresponde à seleção do localizador do MacOSX
   const multiSelectTo = (newEventoPath) => {
     console.log("multiSelectTo", newEventoPath);
 
-    const selectedListClone = [...selectedList];
-    const updated = multiSelect(selectedListClone, newEventoPath);
-    if (updated == null) {
-      return;
-    }
+    if (newEventoPath == null) return;
 
-    setSelectedList(updated);
+    setSelectedList(newEventoPath);
+
+    // const updated = multiSelect(programas, selectedList, newEventoPath);
   };
 
   // const unselectAll = (key) => setState({ [key]: [] });
@@ -95,7 +93,6 @@ export default function DndContext({ props, children }) {
         programas,
         draggingEventoPath,
         selectedList,
-        // dragGroupBreakdowns, dragGroupManagerList, selectedBreakdownIds
         toggleSelection: toggleSelection,
         toggleSelectionInGroup: toggleSelectionInGroup,
         multiSelectTo: multiSelectTo,

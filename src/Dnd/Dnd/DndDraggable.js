@@ -1,7 +1,6 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { keyCodes } from "./keyCodes";
-import { SelectionCount } from "./SelectionCount";
+import { keyCodes, SelectionCount } from "./index";
 
 const primaryButton = 0;
 
@@ -69,7 +68,7 @@ const DraggableContainer = ({
   </div>
 );
 
-export default function DndDraggable({
+export function DndDraggable({
   evento,
   toggleSelection,
   toggleSelectionInGroup,

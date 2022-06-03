@@ -18,11 +18,7 @@ const ItemList = ({ innerRef, isDraggingOver, children }) => {
   );
 };
 
-export default function DndDroppable({
-  droppableId,
-  type = "DEFAULT",
-  children,
-}) {
+export function DndDroppable({ droppableId, type = "DEFAULT", children }) {
   return (
     <Droppable droppableId={droppableId} type={type}>
       {(provided, snapshot) => {

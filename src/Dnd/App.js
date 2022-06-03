@@ -1,8 +1,6 @@
 import React from "react";
 import { Accordion } from "react-bootstrap";
-import DndContext from "./Dnd/DndContext";
-import DndDroppable from "./Dnd/DndDroppable";
-import DndDraggable from "./Dnd/DndDraggable";
+import { DndContext, DndDroppable, DndDraggable } from "./Dnd";
 import "./App.css";
 
 export default function App() {
@@ -134,7 +132,7 @@ export default function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <h1>MAESTRO POC DRAG-DROP</h1>
+        <h1>MAESTRO POC DRAG-DROP - Biblioteca DND</h1>
 
         <DndContext>
           {({
